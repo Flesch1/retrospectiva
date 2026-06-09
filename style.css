@@ -321,5 +321,5 @@ button:hover {
     .big-number { font-size: 4rem; }
     .card { padding: 15px; gap: 10px; }
     .music-player { width: 90%; }
-    .place-image { height: 200px; }
+    /* .place-image { height: 200px; } */
 }
