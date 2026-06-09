@@ -7,7 +7,9 @@ const typewriterElement = document.getElementById('typewriter-text');
 // Configurações personalizadas
 const startDate = new Date('2026-04-10'); // Data de início do relacionamento
 const quotes = [
-    "\"Sweetest of the sunflowers, yeah, you're the sun to me\""
+    "\"Sweetest of the sunflowers, yeah, you're the sun to me\"",
+    "\"You're the sight of utmost beuty, utmost strength and utmost loyalty\"",
+    "\"From the moment you wake me up til you kiss me goodnight, everything that you do, it makes me want more of you\""
 ];
 
 function updateDots() {
