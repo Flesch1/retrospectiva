@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossa Retrospectiva 2026 ❤️</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="particles-js"></div>
+
+    <main id="main-container">
+        <!-- Tela Inicial -->
+        <section class="slide active" id="home">
+            <div class="content">
+                <div class="spotify-logo">💚</div>
+                <h1 class="big-text">Sua retrospectiva de 2026 chegou</h1>
+                <p class="sub-text">Uma jornada pelos nossos melhores momentos.</p>
+                <button class="btn-start" onclick="nextSlide()">Começar</button>
+            </div>
+        </section>
+
+        <!-- Tela 1: Início -->
+        <section class="slide" id="start-date">
+            <div class="content">
+                <h2 class="label">Tudo começou em...</h2>
+                <h1 class="highlight-text">10 de Abril de 2026</h1>
+                <p class="description">O dia em que nossas histórias se cruzaram.</p>
+            </div>
+        </section>
+
+        <!-- Tela 2: Contador -->
+        <section class="slide" id="counter">
+            <div class="content">
+                <h2 class="label">Já se passaram</h2>
+                <div class="counter-wrapper">
+                    <span id="days-count" class="big-number">0</span>
+                    <span class="unit">dias</span>
+                </div>
+                <p class="description">de muito amor, risadas e beijinhos.</p>
+            </div>
+        </section>
+
+        <!-- Tela 3: Top 3 Momentos -->
+        <section class="slide" id="top-moments">
+            <div class="content">
+                <h2 class="label">Seus Top 3 momentos</h2>
+                <div class="cards-container">
+                    <div class="card">
+                        <span class="rank">1</span>
+                        <p>CASAMOOOOOOOOOOOOOOOOOOOOOOOOOS.</p>
+                    </div>
+                    <div class="card">
+                        <span class="rank">2</span>
+                        <p>Aquela viagem pra praia, nada planejada.</p>
+                    </div>
+                    <div class="card">
+                        <span class="rank">3</span>
+                        <p>Ontem, hoje, amanhã, todos os dias ao seu lado.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tela 4: Música -->
+        <section class="slide" id="music">
+            <div class="content">
+                <h2 class="label">Minha música para você</h2>
+                <div class="music-player">
+                    <div class="album-art"><img src="album.cover.jpg" alt="American Heartbreak" style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px;"></div>
+                    <div class="music-info">
+                        <h3>Sun to Me</h3>
+                        <p>Zach Bryan</p>
+                    </div>
+                    <div class="progress-bar">
+                        <div class="progress"></div>
+                    </div>
+                    <div class="controls">
+                        <span>⏮</span> <span>▶</span> <span>⏭</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tela 5: Lugar Favorito -->
+        <section class="slide" id="place">
+            <div class="content">
+                <h2 class="label">Meu lugar favorito no mundo</h2>
+                <div class="place-image">
+                    <img src="favorito.jpeg" alt="Meu lugar favorito">
+                </div>
+                <p class="place-name">Qualquer lugar, desde que seja com você.</p>
+            </div>
+        </section>
+
+        <!-- Tela 6: Frases -->
+        <section class="slide" id="quotes">
+            <div class="content">
+                <h2 class="label">Palavras que marcaram</h2>
+                <div class="typewriter-container">
+                    <p id="typewriter-text"></p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Tela Final -->
+        <section class="slide" id="final">
+            <div class="content">
+                <h1 class="big-text">Obrigado por tudo ❤️</h1>
+                <p class="final-message">Você é a melhor parte do meu 2026 e de todos os outros anos que virão. Te amo!</p>
+                <button class="btn-restart" onclick="restart()">Rever Retrospectiva</button>
+            </div>
+        </section>
+    </main>
+
+    <!-- Navegação -->
+    <div class="nav-dots">
+        <div class="dot active"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
