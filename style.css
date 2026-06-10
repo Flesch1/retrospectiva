@@ -66,15 +66,42 @@ body {
     padding: 24px;
     opacity: 0;
     visibility: hidden;
-    transition: opacity 0.8s ease, visibility 0.8s ease, transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
-    transform: translateY(20px);
+    pointer-events: none;
+    transform: scale(0.93) translateY(24px);
+    filter: blur(6px);
+    transition:
+        opacity    0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        transform  0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        filter     0.65s ease,
+        visibility 0s   0.65s;
     text-align: center;
+    will-change: opacity, transform, filter;
 }
 
 .slide.active {
     opacity: 1;
     visibility: visible;
-    transform: translateY(0);
+    pointer-events: auto;
+    transform: scale(1) translateY(0);
+    filter: blur(0px);
+    transition:
+        opacity    0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        transform  0.65s cubic-bezier(0.16, 1, 0.3, 1),
+        filter     0.65s ease,
+        visibility 0s   0s;
+}
+
+.slide.leaving {
+    opacity: 0;
+    visibility: visible;
+    pointer-events: none;
+    transform: scale(1.06) translateY(-18px);
+    filter: blur(10px);
+    transition:
+        opacity    0.45s ease,
+        transform  0.45s ease,
+        filter     0.45s ease,
+        visibility 0s   0.45s;
 }
 
 /* Backgrounds Gradientes */
@@ -163,21 +190,68 @@ button:active {
 
 /* Contador */
 .counter-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: baseline;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px 20px;
     margin: 20px 0;
+    width: 100%;
+    max-width: 380px;
+}
+
+.counter-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    padding: 18px 10px 14px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
 }
 
 .big-number {
-    font-size: 8rem;
+    font-size: 3rem;
     font-weight: 900;
+    line-height: 1;
 }
 
 .unit {
-    font-size: 2rem;
+    font-size: 0.7rem;
     font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    opacity: 0.75;
+    margin-top: 6px;
+}
+
+/* Seconds block pulsa levemente */
+#seconds-count {
+    color: var(--spotify-green);
+}
+
+/* Chuva de Corações */
+#hearts-container {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.heart {
+    position: absolute;
+    bottom: -60px;
+    animation: floatHeart linear forwards;
+    pointer-events: none;
+    user-select: none;
+    line-height: 1;
+}
+
+@keyframes floatHeart {
+    0%   { transform: translateY(0)        rotate(-10deg); opacity: 0; }
+    10%  { opacity: 1; }
+    90%  { opacity: 0.8; }
+    100% { transform: translateY(-115vh)   rotate(15deg);  opacity: 0; }
 }
 
 /* Cards */
@@ -332,6 +406,137 @@ button:active {
 }
 
 /* ==========================================================================
+   Galeria de Fotos
+   ========================================================================== */
+
+#gallery { background: linear-gradient(135deg, #e040a0 0%, #2d46b9 100%); }
+
+.gallery-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+    padding: 0 32px;
+}
+
+.gallery-subtitle {
+    font-size: 1rem;
+    font-weight: 600;
+    opacity: 0.9;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    letter-spacing: 0.3px;
+}
+
+.gallery-footer {
+    font-size: 0.95rem;
+    font-weight: 600;
+    opacity: 0.85;
+    margin-top: 14px;
+    max-width: 320px;
+    line-height: 1.5;
+}
+
+/* Carrossel */
+.photo-carousel {
+    position: relative;
+    width: 100%;
+    max-width: 340px;
+    user-select: none;
+}
+
+.photo-track {
+    position: relative;
+    width: 100%;
+    height: 48vh;
+    max-height: 400px;
+    min-height: 220px;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 16px 48px rgba(0, 0, 0, 0.6);
+}
+
+.photo-item {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.75s ease;
+}
+
+.photo-item.active { opacity: 1; }
+
+.photo-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center center;
+    display: block;
+}
+
+/* Setas — dentro do photo-track */
+.carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+    padding: 0;
+    transition: background 0.2s ease, transform 0.2s ease;
+    -webkit-tap-highlight-color: transparent;
+    z-index: 10;
+}
+
+.carousel-arrow:hover {
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    transform: translateY(-50%) scale(1.08);
+}
+
+.carousel-arrow:active {
+    transform: translateY(-50%) scale(0.94);
+}
+
+.carousel-prev { left: 10px; }
+.carousel-next { right: 10px; }
+
+/* Indicadores */
+.carousel-indicators {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 12px;
+}
+
+.c-dot {
+    width: 7px;
+    height: 7px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+}
+
+.c-dot.active {
+    background: #ffffff;
+    transform: scale(1.5);
+}
+
+/* ==========================================================================
    Media Queries para Mobile (Smartphones e Tablets Pequenos)
    ========================================================================== */
 
@@ -350,11 +555,20 @@ button:active {
     }
 
     .big-number {
-        font-size: 5rem;
+        font-size: 2.4rem;
     }
 
     .unit {
-        font-size: 1.5rem;
+        font-size: 0.65rem;
+    }
+
+    .counter-wrapper {
+        gap: 10px 14px;
+        max-width: 100%;
+    }
+
+    .counter-block {
+        padding: 14px 8px 10px;
     }
 
     .album-art {
@@ -380,6 +594,14 @@ button:active {
         width: 6px;
         height: 6px;
     }
+
+    .gallery-content {
+        padding: 0 20px;
+    }
+
+    .photo-carousel {
+        max-width: 100%;
+    }
 }
 
 /* Ajustes extras para telas muito pequenas (iPhone SE, etc) */
@@ -393,7 +615,11 @@ button:active {
     }
 
     .big-number {
-        font-size: 4rem;
+        font-size: 2rem;
+    }
+
+    .counter-block {
+        padding: 12px 6px 8px;
     }
 
     .card {
@@ -421,6 +647,11 @@ button:active {
     .place-image {
         height: 250px;
     }
+
+    .gallery-subtitle,
+    .gallery-footer {
+        font-size: 0.85rem;
+    }
 }
 
 /* Ajuste para telas curtas (Landscape ou celulares menores) */
@@ -441,7 +672,16 @@ button:active {
     }
 
     .big-number {
-        font-size: 3.5rem;
+        font-size: 2rem;
+    }
+
+    .counter-wrapper {
+        gap: 8px 12px;
+        margin: 12px 0;
+    }
+
+    .counter-block {
+        padding: 10px 6px 8px;
     }
 
     .cards-container {
@@ -471,5 +711,17 @@ button:active {
     button {
         margin-top: 15px;
         padding: 10px 30px;
+    }
+
+    .photo-track {
+        height: 38vh;
+        min-height: 160px;
+    }
+
+    .gallery-subtitle,
+    .gallery-footer {
+        font-size: 0.8rem;
+        margin-bottom: 8px;
+        margin-top: 6px;
     }
 }
