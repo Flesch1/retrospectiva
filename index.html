@@ -37,8 +37,22 @@
             <div class="content">
                 <h2 class="label">Já se passaram</h2>
                 <div class="counter-wrapper">
-                    <span id="days-count" class="big-number">0</span>
-                    <span class="unit">dias</span>
+                    <div class="counter-block">
+                        <span id="days-count" class="big-number">0</span>
+                        <span class="unit">dias</span>
+                    </div>
+                    <div class="counter-block">
+                        <span id="hours-count" class="big-number">0</span>
+                        <span class="unit">horas</span>
+                    </div>
+                    <div class="counter-block">
+                        <span id="minutes-count" class="big-number">0</span>
+                        <span class="unit">minutos</span>
+                    </div>
+                    <div class="counter-block">
+                        <span id="seconds-count" class="big-number">0</span>
+                        <span class="unit">segundos</span>
+                    </div>
                 </div>
                 <p class="description">de muito amor, risadas e beijinhos.</p>
             </div>
@@ -96,7 +110,40 @@
             </div>
         </section>
 
-        <!-- Tela 6: Frases -->
+        <!-- Tela 6: Galeria de Fotos -->
+        <section class="slide" id="gallery">
+            <div class="content gallery-content">
+                <h2 class="label">Nossa história em fotos</h2>
+                <p class="gallery-subtitle">Momentos que ficam pra sempre no coração 🤍</p>
+
+                <div class="photo-carousel">
+                    <div class="photo-track">
+                        <div class="photo-item active"><img src="foto1.jpg" alt="Nossa foto"></div>
+                        <div class="photo-item"><img src="foto2.jpg" alt="Nossa foto"></div>
+                        <div class="photo-item"><img src="foto3.jpg" alt="Nossa foto"></div>
+                        <div class="photo-item"><img src="foto4.jpg" alt="Nossa foto"></div>
+                        <div class="photo-item"><img src="foto5.jpg" alt="Nossa foto"></div>
+
+                        <!-- Setas -->
+                        <button class="carousel-arrow carousel-prev" onclick="changePhoto(-1)" aria-label="Foto anterior">&#8249;</button>
+                        <button class="carousel-arrow carousel-next" onclick="changePhoto(1)" aria-label="Próxima foto">&#8250;</button>
+                    </div>
+
+                    <!-- Indicadores -->
+                    <div class="carousel-indicators">
+                        <span class="c-dot active" onclick="goToPhoto(0)"></span>
+                        <span class="c-dot" onclick="goToPhoto(1)"></span>
+                        <span class="c-dot" onclick="goToPhoto(2)"></span>
+                        <span class="c-dot" onclick="goToPhoto(3)"></span>
+                        <span class="c-dot" onclick="goToPhoto(4)"></span>
+                    </div>
+                </div>
+
+                <p class="gallery-footer">Cada foto é um lembrete de tudo que construímos juntos ❤️</p>
+            </div>
+        </section>
+
+        <!-- Tela 7: Frases -->
         <section class="slide" id="quotes">
             <div class="content">
                 <h2 class="label">Palavras que marcaram</h2>
@@ -108,7 +155,8 @@
 
         <!-- Tela Final -->
         <section class="slide" id="final">
-            <div class="content">
+            <div id="hearts-container"></div>
+            <div class="content" style="position:relative; z-index:2;">
                 <h1 class="big-text">Obrigado por tudo ❤️</h1>
                 <p class="final-message">Você é a melhor parte do meu 2026 e de todos os outros anos que virão. Te amo!</p>
                 <button class="btn-restart" onclick="restart()">Rever Retrospectiva</button>
@@ -119,6 +167,7 @@
     <!-- Navegação -->
     <div class="nav-dots">
         <div class="dot active"></div>
+        <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
         <div class="dot"></div>
