@@ -165,12 +165,22 @@ function restart() {
 let liveCounterInterval = null;
 
 function getCounterValues() {
-    const diffTime = Math.abs(new Date() - startDate);
+    const now = new Date();
+    const diffTime = Math.abs(now - startDate);
+    
+    // Total de dias
+    const totalDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+    
+    // Horas, minutos e segundos restantes no dia atual
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+    const seconds = now.getSeconds();
+    
     return {
-        days:    Math.floor(diffTime / (1000 * 60 * 60 * 24)),
-        hours:   Math.floor(diffTime / (1000 * 60 * 60)),
-        minutes: Math.floor(diffTime / (1000 * 60)),
-        seconds: Math.floor(diffTime / 1000)
+        days:    totalDays,
+        hours:   hours,
+        minutes: minutes,
+        seconds: seconds
     };
 }
 
@@ -311,8 +321,63 @@ function createParticles() {
     }
 }
 
+// Função para Tela Cheia
+function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(err => {
+            alert(`Erro ao tentar ativar modo tela cheia: ${err.message}`);
+        });
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        }
+    }
+}
+
+// Efeito Parallax baseado no movimento do mouse/giroscópio
+function initParallax() {
+    const slides = document.querySelectorAll('.slide');
+    
+    // Desktop: Movimento do mouse
+    window.addEventListener('mousemove', (e) => {
+        const x = (e.clientX / window.innerWidth) - 0.5;
+        const y = (e.clientY / window.innerHeight) - 0.5;
+        
+        const activeSlide = document.querySelector('.slide.active');
+        if (activeSlide) {
+            const bg = activeSlide.querySelector('.parallax-bg');
+            if (bg) {
+                bg.style.transform = `translate(${x * 30}px, ${y * 30}px)`;
+            }
+            
+            // Também move levemente o conteúdo principal para profundidade extra
+            const content = activeSlide.querySelector('.content');
+            if (content) {
+                content.style.transform = `translate(${x * -10}px, ${y * -10}px)`;
+            }
+        }
+    });
+
+    // Mobile: Orientação do dispositivo (opcional, se suportado)
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener('deviceorientation', (e) => {
+            const x = (e.gamma / 45); // -1 a 1 baseado na inclinação
+            const y = (e.beta / 45);
+            
+            const activeSlide = document.querySelector('.slide.active');
+            if (activeSlide) {
+                const bg = activeSlide.querySelector('.parallax-bg');
+                if (bg) {
+                    bg.style.transform = `translate(${x * 20}px, ${y * 20}px)`;
+                }
+            }
+        }, true);
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     createParticles();
+    initParallax();
     
     // Clique nos dots para navegar
     dots.forEach((dot, index) => {
