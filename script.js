@@ -1,8 +1,97 @@
 let currentSlide = 0;
 const slides = document.querySelectorAll('.slide');
 const dots = document.querySelectorAll('.dot');
-const daysCountElement = document.getElementById('days-count');
+const daysCountElement    = document.getElementById('days-count');
+const hoursCountElement   = document.getElementById('hours-count');
+const minutesCountElement = document.getElementById('minutes-count');
+const secondsCountElement = document.getElementById('seconds-count');
 const typewriterElement = document.getElementById('typewriter-text');
+
+// === Galeria de fotos ===
+let currentPhoto = 0;
+let carouselTimer = null;
+const CAROUSEL_INTERVAL = 4000;
+
+function getPhotoItems() { return document.querySelectorAll('.photo-item'); }
+function getCDots()      { return document.querySelectorAll('.c-dot'); }
+
+function goToPhoto(n) {
+    const items = getPhotoItems();
+    const cdots = getCDots();
+    if (!items.length) return;
+    items[currentPhoto].classList.remove('active');
+    cdots[currentPhoto].classList.remove('active');
+    currentPhoto = ((n % items.length) + items.length) % items.length;
+    items[currentPhoto].classList.add('active');
+    cdots[currentPhoto].classList.add('active');
+}
+
+function changePhoto(dir) {
+    goToPhoto(currentPhoto + dir);
+    resetCarousel();
+}
+
+function startCarousel() {
+    stopCarousel();
+    carouselTimer = setInterval(() => goToPhoto(currentPhoto + 1), CAROUSEL_INTERVAL);
+}
+
+function stopCarousel() {
+    if (carouselTimer) { clearInterval(carouselTimer); carouselTimer = null; }
+}
+
+function resetCarousel() {
+    stopCarousel();
+    startCarousel();
+}
+
+// Chuva de Corações
+const HEART_EMOJIS = ['❤️', '🩷', '💕', '💖', '💗', '💓'];
+let heartInterval = null;
+
+function createHeart() {
+    const container = document.getElementById('hearts-container');
+    if (!container) return;
+    const heart = document.createElement('span');
+    heart.className = 'heart';
+    heart.textContent = HEART_EMOJIS[Math.floor(Math.random() * HEART_EMOJIS.length)];
+    heart.style.left = (Math.random() * 100) + 'vw';
+    const size = (Math.random() * 1.6 + 0.8).toFixed(2);
+    heart.style.fontSize = size + 'rem';
+    const duration = (Math.random() * 4 + 4).toFixed(2);
+    heart.style.animationDuration = duration + 's';
+    heart.style.animationDelay = '0s';
+    container.appendChild(heart);
+    setTimeout(() => heart.remove(), parseFloat(duration) * 1000 + 200);
+}
+
+function startHeartRain() {
+    stopHeartRain();
+    // Burst inicial
+    for (let i = 0; i < 10; i++) setTimeout(createHeart, i * 120);
+    heartInterval = setInterval(createHeart, 350);
+}
+
+function stopHeartRain() {
+    if (heartInterval) { clearInterval(heartInterval); heartInterval = null; }
+    const container = document.getElementById('hearts-container');
+    if (container) container.innerHTML = '';
+}
+let carouselTouchStartX = 0;
+document.addEventListener('DOMContentLoaded', () => {
+    const track = document.querySelector('.photo-track');
+    if (track) {
+        track.addEventListener('touchstart', (e) => {
+            carouselTouchStartX = e.touches[0].clientX;
+        }, { passive: true });
+        track.addEventListener('touchend', (e) => {
+            const diff = carouselTouchStartX - e.changedTouches[0].clientX;
+            if (Math.abs(diff) > 40) {
+                changePhoto(diff > 0 ? 1 : -1);
+            }
+        }, { passive: true });
+    }
+});
 
 // Configurações personalizadas
 const startDate = new Date('2026-04-10'); // Data de início do relacionamento
@@ -31,7 +120,13 @@ function prevSlide() {
 }
 
 function goToSlide(n) {
-    slides[currentSlide].classList.remove('active');
+    const outgoing = slides[currentSlide];
+
+    // Dispara a animação de saída
+    outgoing.classList.remove('active');
+    outgoing.classList.add('leaving');
+    setTimeout(() => outgoing.classList.remove('leaving'), 500);
+
     currentSlide = n;
     slides[currentSlide].classList.add('active');
     updateDots();
@@ -39,8 +134,24 @@ function goToSlide(n) {
     // Gatilhos para animações específicas quando a tela entra
     if (slides[currentSlide].id === 'counter') {
         animateDaysCount();
+    } else {
+        stopLiveCounter();
     }
     
+    if (slides[currentSlide].id === 'gallery') {
+        currentPhoto = 0;
+        goToPhoto(0);
+        startCarousel();
+    } else {
+        stopCarousel();
+    }
+
+    if (slides[currentSlide].id === 'final') {
+        startHeartRain();
+    } else {
+        stopHeartRain();
+    }
+
     if (slides[currentSlide].id === 'quotes') {
         startTypewriter();
     }
@@ -50,32 +161,60 @@ function restart() {
     goToSlide(0);
 }
 
-// Animação do Contador de Dias
+// Animação do Contador de Dias e Horas
+let liveCounterInterval = null;
+
+function getCounterValues() {
+    const diffTime = Math.abs(new Date() - startDate);
+    return {
+        days:    Math.floor(diffTime / (1000 * 60 * 60 * 24)),
+        hours:   Math.floor(diffTime / (1000 * 60 * 60)),
+        minutes: Math.floor(diffTime / (1000 * 60)),
+        seconds: Math.floor(diffTime / 1000)
+    };
+}
+
+function setCounterDisplay(v) {
+    daysCountElement.textContent    = v.days.toLocaleString('pt-BR');
+    hoursCountElement.textContent   = v.hours.toLocaleString('pt-BR');
+    minutesCountElement.textContent = v.minutes.toLocaleString('pt-BR');
+    secondsCountElement.textContent = v.seconds.toLocaleString('pt-BR');
+}
+
 function animateDaysCount() {
-    const today = new Date();
-    const diffTime = Math.abs(today - startDate);
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    
-    let start = 0;
-    const duration = 2500; // 2.5 segundos
+    const target = getCounterValues();
+    const duration = 2500;
     const startTime = performance.now();
+    const easeOutQuad = t => t * (2 - t);
 
     function update(currentTime) {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        
-        // Efeito de easing out para o número desacelerar no final
-        const easeOutQuad = t => t * (2 - t);
-        const currentCount = Math.floor(easeOutQuad(progress) * diffDays);
-        
-        daysCountElement.textContent = currentCount;
+        const progress = Math.min((currentTime - startTime) / duration, 1);
+        const eased = easeOutQuad(progress);
+
+        setCounterDisplay({
+            days:    Math.floor(eased * target.days),
+            hours:   Math.floor(eased * target.hours),
+            minutes: Math.floor(eased * target.minutes),
+            seconds: Math.floor(eased * target.seconds)
+        });
 
         if (progress < 1) {
             requestAnimationFrame(update);
+        } else {
+            startLiveCounter();
         }
     }
 
     requestAnimationFrame(update);
+}
+
+function startLiveCounter() {
+    stopLiveCounter();
+    liveCounterInterval = setInterval(() => setCounterDisplay(getCounterValues()), 1000);
+}
+
+function stopLiveCounter() {
+    if (liveCounterInterval) { clearInterval(liveCounterInterval); liveCounterInterval = null; }
 }
 
 // Efeito de Typewriter
